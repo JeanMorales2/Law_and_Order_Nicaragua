@@ -1,0 +1,48 @@
+# Build
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+.vs/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# NuGet
+packages/
+*.nupkg
+
+# Publish
+publish/
+
+# Logs
+*.log
+
+# ASP.NET
+wwwroot/uploads/
+wwwroot/temp/
+
+# Secrets
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+
+# EF Core
+*.dbmdl
+
+# Coverage
+coverage/
+TestResults/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
