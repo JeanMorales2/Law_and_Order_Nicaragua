@@ -1,16 +1,35 @@
 using LegalNic.Domain.Entities;
 using LegalNic.Domain.Enums;
+using LegalNic.Infrastructure.Auth;
 using LegalNic.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace LegalNic.Infrastructure.Seed;
 
 public static class DbSeeder
 {
-    public static async Task SeedAsync(LegalNicDbContext context, CancellationToken cancellationToken = default)
+    public static async Task SeedAsync(
+        LegalNicDbContext context,
+        RoleManager<IdentityRole<int>> roleManager,
+        CancellationToken cancellationToken = default)
     {
+        await SeedRolesAsync(roleManager);
         await SeedCategoriesAsync(context, cancellationToken);
         await SeedLawyersAsync(context, cancellationToken);
+    }
+
+    private static async Task SeedRolesAsync(RoleManager<IdentityRole<int>> roleManager)
+    {
+        foreach (var roleName in Enum.GetNames<UserRole>())
+        {
+            if (await roleManager.RoleExistsAsync(roleName))
+            {
+                continue;
+            }
+
+            await roleManager.CreateAsync(new IdentityRole<int>(roleName));
+        }
     }
 
     private static async Task SeedCategoriesAsync(
@@ -108,7 +127,6 @@ public static class DbSeeder
             FullName = "Lic. Mario Sequeira",
             Email = "mario.sequeira@legalnic.local",
             PhoneNumber = "8888-1101",
-            PasswordHash = "HASHED_PASSWORD_SAMPLE_01",
             Role = UserRole.Lawyer,
             IsVerified = true,
             CreatedAt = createdAt,
@@ -160,7 +178,6 @@ public static class DbSeeder
             FullName = "Lic. Andrea Mairena",
             Email = "andrea.mairena@legalnic.local",
             PhoneNumber = "8888-1102",
-            PasswordHash = "HASHED_PASSWORD_SAMPLE_02",
             Role = UserRole.Lawyer,
             IsVerified = true,
             CreatedAt = createdAt,
@@ -212,7 +229,6 @@ public static class DbSeeder
             FullName = "Br. Carlos Gutiérrez",
             Email = "carlos.gutierrez@legalnic.local",
             PhoneNumber = "8888-1103",
-            PasswordHash = "HASHED_PASSWORD_SAMPLE_03",
             Role = UserRole.Student,
             IsVerified = false,
             CreatedAt = createdAt,

@@ -1,11 +1,13 @@
 using System.Reflection;
 using LegalNic.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace LegalNic.Api.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/[controller]")]
 public sealed class HealthController : ControllerBase
 {

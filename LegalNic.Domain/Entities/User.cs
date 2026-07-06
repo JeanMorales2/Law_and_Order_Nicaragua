@@ -11,8 +11,6 @@ public sealed class User : AuditableEntity
 
     public string PhoneNumber { get; set; } = string.Empty;
 
-    public string PasswordHash { get; set; } = string.Empty;
-
     public UserRole Role { get; set; }
 
     public bool IsVerified { get; set; }

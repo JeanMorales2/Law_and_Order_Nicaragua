@@ -1,13 +1,17 @@
 using System.Linq.Expressions;
+using LegalNic.Infrastructure.Auth;
 using LegalNic.Domain.Common;
 using LegalNic.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LegalNic.Infrastructure.Persistence;
 
-public sealed class LegalNicDbContext(DbContextOptions<LegalNicDbContext> options) : DbContext(options)
+public sealed class LegalNicDbContext(DbContextOptions<LegalNicDbContext> options)
+    : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>(options)
 {
-    public DbSet<User> Users => Set<User>();
+    public new DbSet<User> Users => Set<User>();
 
     public DbSet<LawyerProfile> LawyerProfiles => Set<LawyerProfile>();
 
@@ -26,6 +30,8 @@ public sealed class LegalNicDbContext(DbContextOptions<LegalNicDbContext> option
     public DbSet<VerificationDocument> VerificationDocuments => Set<VerificationDocument>();
 
     public DbSet<Availability> Availability => Set<Availability>();
+
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
