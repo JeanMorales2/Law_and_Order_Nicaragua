@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 import type { ReactNode } from "react";
 import { theme } from "../theme";
 
@@ -8,6 +8,7 @@ type ButtonProps = {
   label: string;
   variant?: ButtonVariant;
   disabled?: boolean;
+  loading?: boolean;
   leftIcon?: ReactNode;
   onPress?: () => void;
 };
@@ -44,26 +45,28 @@ export function Button({
   label,
   variant = "primary",
   disabled = false,
+  loading = false,
   leftIcon,
   onPress,
 }: ButtonProps) {
   const palette = variantStyles[variant];
+  const isDisabled = disabled || loading;
 
   return (
     <Pressable
       accessibilityRole="button"
-      disabled={disabled}
+      disabled={isDisabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.base,
         {
           backgroundColor: palette.backgroundColor,
           borderColor: palette.borderColor,
-          opacity: disabled ? 0.45 : pressed ? 0.86 : 1,
+          opacity: isDisabled ? 0.45 : pressed ? 0.86 : 1,
         },
       ]}
     >
-      {leftIcon}
+      {loading ? <ActivityIndicator color={palette.textColor} size="small" /> : leftIcon}
       <Text style={[styles.label, { color: palette.textColor }]}>{label}</Text>
     </Pressable>
   );

@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { RootNavigator } from "./src/navigation/RootNavigator";
 import { useAppFonts } from "./src/hooks/useAppFonts";
+import { useBootstrapSession } from "./src/hooks/useBootstrapSession";
 import { navigationTheme } from "./src/theme/navigationTheme";
 import { theme } from "./src/theme";
 
@@ -20,6 +21,7 @@ const queryClient = new QueryClient({
 
 export default function App() {
   const fontsLoaded = useAppFonts();
+  useBootstrapSession();
 
   if (!fontsLoaded) {
     return (
