@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using FluentValidation;
+using LegalNic.Application.Common;
 
 namespace LegalNic.Api.Middleware;
 
@@ -31,6 +32,9 @@ public sealed class GlobalExceptionMiddleware(RequestDelegate next, ILogger<Glob
                 string.Join(" ", validationException.Errors.Select(error => error.ErrorMessage))),
             UnauthorizedAccessException => (
                 StatusCodes.Status401Unauthorized,
+                exception.Message),
+            ConflictException => (
+                StatusCodes.Status409Conflict,
                 exception.Message),
             InvalidOperationException => (
                 StatusCodes.Status400BadRequest,

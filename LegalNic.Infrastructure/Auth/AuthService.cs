@@ -31,6 +31,7 @@ public sealed class AuthService(
             Email = normalizedEmail,
             PhoneNumber = request.PhoneNumber.Trim(),
             Role = request.Role,
+            IsActive = true,
             IsVerified = request.Role == UserRole.Citizen
         };
 
@@ -97,6 +98,17 @@ public sealed class AuthService(
             throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
+        var userIsActive = await _dbContext.Users
+            .AsNoTracking()
+            .Where(user => user.Id == applicationUser.DomainUserId)
+            .Select(user => (bool?)user.IsActive)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (userIsActive != true)
+        {
+            throw new UnauthorizedAccessException("This account is suspended.");
+        }
+
         var passwordValid = await _userManager.CheckPasswordAsync(applicationUser, request.Password);
 
         if (!passwordValid)
@@ -119,6 +131,17 @@ public sealed class AuthService(
         if (storedToken is null || storedToken.RevokedAtUtc.HasValue || storedToken.ExpiresAtUtc <= DateTime.UtcNow)
         {
             throw new UnauthorizedAccessException("Invalid or expired refresh token.");
+        }
+
+        var userIsActive = await _dbContext.Users
+            .AsNoTracking()
+            .Where(user => user.Id == storedToken.ApplicationUser.DomainUserId)
+            .Select(user => (bool?)user.IsActive)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (userIsActive != true)
+        {
+            throw new UnauthorizedAccessException("This account is suspended.");
         }
 
         storedToken.RevokedAtUtc = DateTime.UtcNow;

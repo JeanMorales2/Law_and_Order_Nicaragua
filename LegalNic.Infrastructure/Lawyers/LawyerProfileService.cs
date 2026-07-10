@@ -2,6 +2,7 @@ using LegalNic.Application.Lawyers;
 using LegalNic.Domain.Entities;
 using LegalNic.Domain.Enums;
 using LegalNic.Infrastructure.Persistence;
+using LegalNic.Infrastructure.Reviews;
 using Microsoft.EntityFrameworkCore;
 
 namespace LegalNic.Infrastructure.Lawyers;
@@ -17,28 +18,37 @@ public sealed class LawyerProfileService(
         int lawyerProfileId,
         CancellationToken cancellationToken = default)
     {
+        var reviewSummaries = _dbContext.BuildLawyerReviewSummaryQuery();
+
         var lawyerProfile = await _dbContext.LawyerProfiles
             .AsNoTracking()
             .Where(profile => profile.Id == lawyerProfileId)
-            .Select(profile => new PublicLawyerProfileResponse
+            .GroupJoin(
+                reviewSummaries,
+                profile => profile.Id,
+                summary => summary.LawyerProfileId,
+                (profile, summaries) => new
+                {
+                    Profile = profile,
+                    ReviewSummary = summaries.SingleOrDefault()
+                })
+            .Select(entity => new PublicLawyerProfileResponse
             {
-                Id = profile.Id,
-                UserId = profile.UserId,
-                FullName = profile.User.FullName,
-                University = profile.University,
-                IsStudent = profile.IsStudent,
-                YearsExperience = profile.YearsExperience,
-                Bio = profile.Bio,
-                Department = profile.Department,
-                Municipality = profile.Municipality,
-                VerificationStatus = profile.VerificationStatus,
-                IsVerified = profile.User.IsVerified,
-                AverageRating = profile.Services
-                    .SelectMany(service => service.ServiceRequests)
-                    .Where(serviceRequest => serviceRequest.Review != null)
-                    .Select(serviceRequest => (decimal?)serviceRequest.Review!.Rating)
-                    .Average(),
-                ActiveServices = profile.Services
+                Id = entity.Profile.Id,
+                UserId = entity.Profile.UserId,
+                FullName = entity.Profile.User.FullName,
+                University = entity.Profile.University,
+                IsStudent = entity.Profile.IsStudent,
+                YearsExperience = entity.Profile.YearsExperience,
+                Bio = entity.Profile.Bio,
+                Department = entity.Profile.Department,
+                Municipality = entity.Profile.Municipality,
+                VerificationStatus = entity.Profile.VerificationStatus,
+                IsVerified = entity.Profile.User.IsVerified,
+                AverageRating = entity.ReviewSummary == null
+                    ? null
+                    : entity.ReviewSummary.AverageRating,
+                ActiveServices = entity.Profile.Services
                     .Where(service => service.IsActive)
                     .OrderBy(service => service.Name)
                     .Select(service => new PublicLawyerServiceResponse
@@ -115,7 +125,11 @@ public sealed class LawyerProfileService(
         _ = contentType;
 
         var lawyerProfile = await GetOwnedLawyerProfileAsync(userId, cancellationToken);
-        var fileUrl = await _fileStorageService.SaveVerificationDocumentAsync(fileName, content, cancellationToken);
+        var fileUrl = await _fileStorageService.SaveVerificationDocumentAsync(
+            fileName,
+            contentType,
+            content,
+            cancellationToken);
 
         var document = new VerificationDocument
         {

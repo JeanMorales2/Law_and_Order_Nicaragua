@@ -44,5 +44,16 @@ La cadena de conexion se configura en:
 Valor de desarrollo actual:
 
 ```text
-Server=localhost;Database=LegalNicDb;Trusted_Connection=True;TrustServerCertificate=True;
+Server=(localdb)\MSSQLLocalDB;Database=LegalNicDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;
 ```
+
+## Checklist de seguridad revisada
+
+- [x] JWT sin exposición de `PasswordHash` ni campos internos de Identity en DTOs de respuesta.
+- [x] Rate limiting básico aplicado a `POST /api/auth/login` por IP.
+- [x] Redirección HTTPS forzada con código `308` y `HSTS` fuera de `Development`.
+- [x] Cabeceras de seguridad agregadas (`X-Content-Type-Options`, `X-Frame-Options`, `CSP`, `Referrer-Policy`, `Permissions-Policy`).
+- [x] Validación estricta de documentos subidos por firma real del archivo y tipo MIME permitido.
+- [x] Notificaciones por email desacopladas del negocio mediante `INotificationService`.
+- [x] Stub de `IPushNotificationService` listo para integración futura con FCM.
+- [x] Swagger enriquecido con ejemplos de request/response para endpoints principales.

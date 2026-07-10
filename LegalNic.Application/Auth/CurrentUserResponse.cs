@@ -14,6 +14,8 @@ public sealed class CurrentUserResponse
 
     public UserRole Role { get; init; }
 
+    public bool IsActive { get; init; }
+
     public bool IsVerified { get; init; }
 
     public CurrentLawyerProfileResponse? LawyerProfile { get; init; }

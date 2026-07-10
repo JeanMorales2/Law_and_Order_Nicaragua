@@ -29,6 +29,7 @@ public sealed class CurrentUserService(LegalNicDbContext dbContext) : ICurrentUs
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
             Role = user.Role,
+            IsActive = user.IsActive,
             IsVerified = user.IsVerified,
             LawyerProfile = user.LawyerProfile is null
                 ? null

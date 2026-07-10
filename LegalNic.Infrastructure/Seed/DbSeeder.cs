@@ -17,6 +17,7 @@ public static class DbSeeder
         await SeedRolesAsync(roleManager);
         await SeedCategoriesAsync(context, cancellationToken);
         await SeedLawyersAsync(context, cancellationToken);
+        await SeedReviewsAsync(context, cancellationToken);
     }
 
     private static async Task SeedRolesAsync(RoleManager<IdentityRole<int>> roleManager)
@@ -128,6 +129,7 @@ public static class DbSeeder
             Email = "mario.sequeira@legalnic.local",
             PhoneNumber = "8888-1101",
             Role = UserRole.Lawyer,
+            IsActive = true,
             IsVerified = true,
             CreatedAt = createdAt,
             LawyerProfile = new LawyerProfile
@@ -179,6 +181,7 @@ public static class DbSeeder
             Email = "andrea.mairena@legalnic.local",
             PhoneNumber = "8888-1102",
             Role = UserRole.Lawyer,
+            IsActive = true,
             IsVerified = true,
             CreatedAt = createdAt,
             LawyerProfile = new LawyerProfile
@@ -230,6 +233,7 @@ public static class DbSeeder
             Email = "carlos.gutierrez@legalnic.local",
             PhoneNumber = "8888-1103",
             Role = UserRole.Student,
+            IsActive = true,
             IsVerified = false,
             CreatedAt = createdAt,
             LawyerProfile = new LawyerProfile
@@ -276,6 +280,87 @@ public static class DbSeeder
         };
 
         await context.Users.AddRangeAsync([marioUser, andreaUser, carlosUser], cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task SeedReviewsAsync(
+        LegalNicDbContext context,
+        CancellationToken cancellationToken)
+    {
+        if (await context.ServiceRequests.AnyAsync(cancellationToken))
+        {
+            return;
+        }
+
+        var createdAt = new DateTime(2026, 7, 2, 0, 0, 0, DateTimeKind.Utc);
+
+        var marioVehicleService = await context.Services
+            .SingleAsync(service => service.Name == "Compra y venta de vehículo", cancellationToken);
+
+        var citizens = new[]
+        {
+            new User
+            {
+                FullName = "Ana López",
+                Email = "ana.lopez@legalnic.local",
+                PhoneNumber = "8888-2101",
+                Role = UserRole.Citizen,
+                IsActive = true,
+                IsVerified = false,
+                CreatedAt = createdAt
+            },
+            new User
+            {
+                FullName = "José Martínez",
+                Email = "jose.martinez@legalnic.local",
+                PhoneNumber = "8888-2102",
+                Role = UserRole.Citizen,
+                IsActive = true,
+                IsVerified = false,
+                CreatedAt = createdAt
+            }
+        };
+
+        await context.Users.AddRangeAsync(citizens, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+
+        var serviceRequests = new[]
+        {
+            new ServiceRequest
+            {
+                ServiceId = marioVehicleService.Id,
+                ClientId = citizens[0].Id,
+                AgreedPrice = 1500m,
+                Status = ServiceRequestStatus.Completed,
+                CaseDetail = "Revisión de documentos y acompañamiento en compraventa de vehículo usado.",
+                CompletedAt = createdAt.AddDays(3),
+                CreatedAt = createdAt,
+                Review = new Review
+                {
+                    Rating = 5,
+                    Comment = "Servicio claro y rápido durante todo el trámite.",
+                    CreatedAt = createdAt.AddDays(3)
+                }
+            },
+            new ServiceRequest
+            {
+                ServiceId = marioVehicleService.Id,
+                ClientId = citizens[1].Id,
+                AgreedPrice = 1600m,
+                Status = ServiceRequestStatus.Completed,
+                CaseDetail = "Acompañamiento para compra de vehículo y validación registral previa.",
+                CompletedAt = createdAt.AddDays(4),
+                CreatedAt = createdAt.AddDays(1),
+                Review = new Review
+                {
+                    Rating = 4,
+                    Comment = "Buena orientación y documentos listos a tiempo.",
+                    CreatedAt = createdAt.AddDays(4)
+                }
+            }
+        };
+
+        await context.ServiceRequests.AddRangeAsync(serviceRequests, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

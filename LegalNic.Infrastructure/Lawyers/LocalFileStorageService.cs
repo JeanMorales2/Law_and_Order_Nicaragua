@@ -10,9 +10,12 @@ public sealed class LocalFileStorageService(IWebHostEnvironment environment) : I
 
     public async Task<string> SaveVerificationDocumentAsync(
         string fileName,
+        string contentType,
         Stream content,
         CancellationToken cancellationToken = default)
     {
+        await FileSignatureValidator.ValidateAsync(fileName, contentType, content, cancellationToken);
+
         var webRootPath = _environment.WebRootPath;
 
         if (string.IsNullOrWhiteSpace(webRootPath))
@@ -27,6 +30,7 @@ public sealed class LocalFileStorageService(IWebHostEnvironment environment) : I
         var absolutePath = Path.Combine(targetDirectory, storedFileName);
 
         await using var fileStream = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write);
+        content.Position = 0;
         await content.CopyToAsync(fileStream, cancellationToken);
 
         return $"/{VerificationFolder}/{storedFileName}";

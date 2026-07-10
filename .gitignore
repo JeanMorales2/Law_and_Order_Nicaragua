@@ -46,3 +46,25 @@ TestResults/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Uploaded documents
+LegalNic.Api/wwwroot/uploads/verification/*
+!LegalNic.Api/wwwroot/uploads/verification/.gitkeep
+
+# User uploaded files
+LegalNic.Api/wwwroot/uploads/*
+!LegalNic.Api/wwwroot/uploads/.gitkeep
+
+# Temporary folders
+.tmp/
+
+# Build output
+**/bin/
+**/obj/
+
+# Rider / VS / VSCode
+.vs/
+.vscode/
+.idea/
+
+MM .gitignore

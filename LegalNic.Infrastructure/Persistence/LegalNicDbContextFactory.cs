@@ -15,6 +15,7 @@ public sealed class LegalNicDbContextFactory : IDesignTimeDbContextFactory<Legal
             .SetBasePath(apiProjectPath)
             .AddJsonFile("appsettings.json", optional: false)
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
+            .AddEnvironmentVariables()
             .Build();
 
         var connectionString = configuration.GetConnectionString("DefaultConnection")

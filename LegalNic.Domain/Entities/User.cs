@@ -13,6 +13,8 @@ public sealed class User : AuditableEntity
 
     public UserRole Role { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     public bool IsVerified { get; set; }
 
     public LawyerProfile? LawyerProfile { get; set; }

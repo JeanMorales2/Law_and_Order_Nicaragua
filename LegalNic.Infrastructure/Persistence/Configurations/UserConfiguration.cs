@@ -27,6 +27,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(entity => entity.Role)
             .IsRequired();
 
+        builder.Property(entity => entity.IsActive)
+            .IsRequired();
+
         builder.Property(entity => entity.CreatedAt)
             .IsRequired();
 
