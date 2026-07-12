@@ -21,4 +21,17 @@ public sealed class UsersController(ICurrentUserService currentUserService) : Co
         var response = await _currentUserService.GetCurrentUserAsync(userId, cancellationToken);
         return Ok(response);
     }
+
+    [HttpPut("me")]
+    [ProducesResponseType(typeof(CurrentUserResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<CurrentUserResponse>> UpdateMe(
+        [FromBody] UpdateCurrentUserRequest request,
+        CancellationToken cancellationToken)
+    {
+        var userId = User.GetRequiredLegalNicUserId();
+        var response = await _currentUserService.UpdateCurrentUserAsync(userId, request, cancellationToken);
+        return Ok(response);
+    }
 }

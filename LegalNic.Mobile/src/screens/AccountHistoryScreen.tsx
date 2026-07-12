@@ -1,37 +1,32 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
-import type { CompositeNavigationProp } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
-import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "../components/Button";
 import { StatusPill } from "../components/StatusPill";
-import type { CitizenTabParamList } from "../navigation/AppTabsNavigator";
 import type { RootStackParamList } from "../navigation/RootNavigator";
-import type { ServiceRequestStatus, ServiceRequestSummaryResponse } from "../services/api/contracts";
+import type { ServiceRequestSummaryResponse } from "../services/api/contracts";
 import { getMyServiceRequests } from "../services/api/requests";
 import { theme } from "../theme";
+import { getStatusLabel, getStatusTone } from "./CitizenRequestsScreen";
 
-type RequestsNavigation = CompositeNavigationProp<
-  BottomTabNavigationProp<CitizenTabParamList, "CitizenRequests">,
-  NativeStackNavigationProp<RootStackParamList>
->;
+type Props = NativeStackScreenProps<RootStackParamList, "AccountHistory">;
 
-export function CitizenRequestsScreen() {
-  const navigation = useNavigation<RequestsNavigation>();
-  const insets = useSafeAreaInsets();
+export function AccountHistoryScreen({ navigation }: Props) {
   const requestsQuery = useQuery({
     queryKey: ["requests", "mine"],
     queryFn: getMyServiceRequests,
   });
 
+  const history = (requestsQuery.data ?? []).filter(
+    (request) => request.status === "Completed" || request.status === "Rejected",
+  );
+
   return (
     <View style={styles.screen}>
       <FlatList
-        contentContainerStyle={[styles.content, { paddingBottom: Math.max(insets.bottom + 92, 120) }]}
-        data={requestsQuery.data ?? []}
+        contentContainerStyle={styles.content}
+        data={history}
         keyExtractor={(item) => String(item.id)}
         ListEmptyComponent={
           requestsQuery.isLoading ? (
@@ -44,9 +39,12 @@ export function CitizenRequestsScreen() {
         }
         ListHeaderComponent={
           <View style={styles.header}>
-            <Text style={styles.kicker}>Ciudadano</Text>
-            <Text style={styles.title}>Solicitudes</Text>
-            <Text style={styles.copy}>Da seguimiento a tus expedientes activos y finalizados.</Text>
+            <Pressable accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Ionicons color={theme.colors.paper} name="chevron-back" size={24} />
+            </Pressable>
+            <Text style={styles.kicker}>Cuenta</Text>
+            <Text style={styles.title}>Historial de tramites</Text>
+            <Text style={styles.copy}>Solicitudes finalizadas y rechazadas.</Text>
           </View>
         }
         refreshControl={
@@ -58,7 +56,7 @@ export function CitizenRequestsScreen() {
           />
         }
         renderItem={({ item }) => (
-          <RequestCard
+          <HistoryCard
             item={item}
             onPress={() =>
               navigation.navigate("ServiceRequestDetail", {
@@ -73,7 +71,7 @@ export function CitizenRequestsScreen() {
   );
 }
 
-function RequestCard({ item, onPress }: { item: ServiceRequestSummaryResponse; onPress: () => void }) {
+function HistoryCard({ item, onPress }: { item: ServiceRequestSummaryResponse; onPress: () => void }) {
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.cardTop}>
@@ -87,10 +85,9 @@ function RequestCard({ item, onPress }: { item: ServiceRequestSummaryResponse; o
         {item.caseDetail}
       </Text>
       <View style={styles.cardFooter}>
-        <View style={styles.metaItem}>
-          <Ionicons color={theme.colors.inkSoft} name="calendar-outline" size={15} />
-          <Text style={styles.metaText}>{formatDate(item.createdAt)}</Text>
-        </View>
+        <Text style={styles.metaText}>
+          {item.completedAt ? `Finalizada ${formatDate(item.completedAt)}` : `Creada ${formatDate(item.createdAt)}`}
+        </Text>
         <Ionicons color={theme.colors.navySoft} name="chevron-forward" size={20} />
       </View>
     </Pressable>
@@ -100,11 +97,10 @@ function RequestCard({ item, onPress }: { item: ServiceRequestSummaryResponse; o
 function SkeletonList() {
   return (
     <View style={styles.skeletonWrap}>
-      {Array.from({ length: 4 }, (_, index) => (
+      {Array.from({ length: 3 }, (_, index) => (
         <View key={index} style={styles.skeletonCard}>
-          <View style={styles.skeletonLineWide} />
+          <View style={styles.skeletonWide} />
           <View style={styles.skeletonLine} />
-          <View style={styles.skeletonLineShort} />
         </View>
       ))}
     </View>
@@ -114,9 +110,9 @@ function SkeletonList() {
 function EmptyState() {
   return (
     <View style={styles.stateBox}>
-      <Ionicons color={theme.colors.gold} name="folder-open-outline" size={34} />
-      <Text style={styles.stateTitle}>Aun no tienes solicitudes</Text>
-      <Text style={styles.stateCopy}>Cuando solicites un servicio legal, aparecera aqui.</Text>
+      <Ionicons color={theme.colors.gold} name="archive-outline" size={34} />
+      <Text style={styles.stateTitle}>No hay tramites cerrados</Text>
+      <Text style={styles.stateCopy}>Las solicitudes finalizadas o rechazadas apareceran aqui.</Text>
     </View>
   );
 }
@@ -125,37 +121,11 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View style={styles.stateBox}>
       <Ionicons color={theme.colors.rojo} name="cloud-offline-outline" size={34} />
-      <Text style={styles.stateTitle}>No pudimos cargar tus solicitudes</Text>
+      <Text style={styles.stateTitle}>No pudimos cargar el historial</Text>
       <Text style={styles.stateCopy}>Revisa tu conexion e intenta nuevamente.</Text>
       <Button label="Reintentar" onPress={onRetry} variant="dark" />
     </View>
   );
-}
-
-export function getStatusLabel(status: ServiceRequestStatus) {
-  switch (status) {
-    case "Pending":
-      return "Pendiente";
-    case "InProgress":
-      return "En proceso";
-    case "Completed":
-      return "Finalizada";
-    case "Rejected":
-      return "Rechazada";
-  }
-}
-
-export function getStatusTone(status: ServiceRequestStatus) {
-  switch (status) {
-    case "Pending":
-      return "pending";
-    case "InProgress":
-      return "inProgress";
-    case "Completed":
-      return "completed";
-    case "Rejected":
-      return "rejected";
-  }
 }
 
 function formatDate(value: string) {
@@ -173,10 +143,24 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: theme.spacing.md,
+    paddingBottom: theme.spacing.xxxl,
   },
   header: {
+    backgroundColor: theme.colors.navy,
+    marginHorizontal: -theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.xxxl,
     paddingBottom: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: theme.radii.pill,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    marginBottom: theme.spacing.lg,
   },
   kicker: {
     ...theme.typography.label,
@@ -185,12 +169,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...theme.typography.h1,
-    color: theme.colors.navy,
+    color: theme.colors.paper,
     marginTop: theme.spacing.xs,
   },
   copy: {
     ...theme.typography.body,
-    color: theme.colors.inkSoft,
+    color: theme.colors.goldSoft,
     marginTop: theme.spacing.xs,
   },
   card: {
@@ -232,11 +216,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  metaItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.xxs,
-  },
   metaText: {
     ...theme.typography.bodySm,
     color: theme.colors.inkSoft,
@@ -251,22 +230,15 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.line,
     padding: theme.spacing.md,
     gap: theme.spacing.sm,
-    marginBottom: theme.spacing.sm,
   },
-  skeletonLineWide: {
-    width: "82%",
+  skeletonWide: {
+    width: "78%",
     height: 14,
     borderRadius: theme.radii.pill,
     backgroundColor: theme.colors.goldSoft,
   },
   skeletonLine: {
-    width: "66%",
-    height: 12,
-    borderRadius: theme.radii.pill,
-    backgroundColor: theme.colors.goldSoft,
-  },
-  skeletonLineShort: {
-    width: "38%",
+    width: "52%",
     height: 12,
     borderRadius: theme.radii.pill,
     backgroundColor: theme.colors.goldSoft,

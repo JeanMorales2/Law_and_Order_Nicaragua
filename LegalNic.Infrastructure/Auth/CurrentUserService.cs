@@ -44,7 +44,36 @@ public sealed class CurrentUserService(LegalNicDbContext dbContext) : ICurrentUs
                     Department = user.LawyerProfile.Department,
                     Municipality = user.LawyerProfile.Municipality,
                     VerificationStatus = user.LawyerProfile.VerificationStatus
-                }
+            }
         };
+    }
+
+    public async Task<CurrentUserResponse> UpdateCurrentUserAsync(
+        int userId,
+        UpdateCurrentUserRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _dbContext.Users
+            .SingleOrDefaultAsync(entity => entity.Id == userId, cancellationToken);
+
+        if (user is null)
+        {
+            throw new UnauthorizedAccessException("Authenticated user was not found.");
+        }
+
+        user.FullName = request.FullName.Trim();
+        user.PhoneNumber = request.PhoneNumber.Trim();
+
+        var authUser = await _dbContext.Set<ApplicationUser>()
+            .SingleOrDefaultAsync(entity => entity.DomainUserId == userId, cancellationToken);
+
+        if (authUser is not null)
+        {
+            authUser.PhoneNumber = user.PhoneNumber;
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return await GetCurrentUserAsync(userId, cancellationToken);
     }
 }
