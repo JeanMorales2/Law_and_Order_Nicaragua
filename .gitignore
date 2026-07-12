@@ -31,6 +31,9 @@ wwwroot/uploads/
 wwwroot/temp/
 
 # Secrets
+.env
+.env.*
+!.env.example
 appsettings.Local.json
 appsettings.*.local.json
 secrets.json

@@ -128,7 +128,7 @@ export function LawyerServiceFormScreen({ navigation, route }: Props) {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Pressable accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Pressable accessibilityLabel="Volver" accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons color={theme.colors.paper} name="chevron-back" size={24} />
           </Pressable>
           <Text style={styles.kicker}>{editing ? "Editar catalogo" : "Nuevo servicio"}</Text>

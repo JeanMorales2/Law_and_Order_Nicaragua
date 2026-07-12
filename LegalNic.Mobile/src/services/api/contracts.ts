@@ -64,6 +64,11 @@ export type UpdateCurrentUserRequest = {
   phoneNumber: string;
 };
 
+export type RegisterDeviceTokenRequest = {
+  deviceToken: string;
+  platform: string;
+};
+
 export type CategoryResponse = {
   id: number;
   name: string;

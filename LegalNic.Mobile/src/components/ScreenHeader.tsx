@@ -23,7 +23,7 @@ export function ScreenHeader({
       <View style={styles.row}>
         <View style={styles.leading}>
           {showBackButton ? (
-            <Pressable onPress={onBackPress} style={styles.backButton}>
+            <Pressable accessibilityLabel="Volver" accessibilityRole="button" onPress={onBackPress} style={styles.backButton}>
               <Ionicons color={theme.colors.navy} name="arrow-back" size={20} />
             </Pressable>
           ) : null}
@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   backButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: theme.radii.pill,
     backgroundColor: theme.colors.goldSoft,
     alignItems: "center",

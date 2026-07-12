@@ -185,7 +185,7 @@ export function RequestChatScreen({ navigation, route }: Props) {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.screen}>
       <View style={styles.header}>
-        <Pressable accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Pressable accessibilityLabel="Volver" accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons color={theme.colors.paper} name="chevron-back" size={24} />
         </Pressable>
         <View style={styles.headerText}>
@@ -230,6 +230,7 @@ export function RequestChatScreen({ navigation, route }: Props) {
           value={draft}
         />
         <Pressable
+          accessibilityLabel="Enviar mensaje"
           accessibilityRole="button"
           disabled={!canSend}
           onPress={() => void sendMessage()}

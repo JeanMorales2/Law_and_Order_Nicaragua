@@ -107,7 +107,7 @@ export function ServiceRequestDetailScreen({ navigation, route }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Pressable accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Pressable accessibilityLabel="Volver" accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons color={theme.colors.paper} name="chevron-back" size={24} />
           </Pressable>
           <Text style={styles.kicker}>Solicitud #{detail.id}</Text>

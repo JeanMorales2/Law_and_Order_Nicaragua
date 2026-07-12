@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#FAF7F1"/>
+  <rect x="16" y="48" width="358" height="112" rx="16" fill="#1B2A4A"/>
+  <circle cx="62" cy="104" r="28" fill="#F1ECE0"/>
+  <text x="106" y="94" fill="#B98B34" font-family="Arial" font-size="13" font-weight="700">CUENTA</text>
+  <text x="106" y="122" fill="#FAF7F1" font-family="Arial" font-size="20" font-weight="700">Ana Lopez</text>
+  <rect x="16" y="190" width="358" height="142" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <text x="36" y="228" fill="#1B2A4A" font-family="Arial" font-size="18" font-weight="700">Datos personales</text>
+  <rect x="16" y="352" width="358" height="92" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <text x="36" y="404" fill="#1B2A4A" font-family="Arial" font-size="16" font-weight="700">Ingresos y comisiones</text>
+</svg>

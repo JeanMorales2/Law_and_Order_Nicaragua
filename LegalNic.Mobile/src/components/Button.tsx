@@ -6,6 +6,7 @@ type ButtonVariant = "primary" | "dark" | "outline" | "danger" | "ghost";
 
 type ButtonProps = {
   label: string;
+  accessibilityLabel?: string;
   variant?: ButtonVariant;
   disabled?: boolean;
   loading?: boolean;
@@ -42,6 +43,7 @@ const variantStyles = {
 } as const;
 
 export function Button({
+  accessibilityLabel,
   label,
   variant = "primary",
   disabled = false,
@@ -54,6 +56,7 @@ export function Button({
 
   return (
     <Pressable
+      accessibilityLabel={accessibilityLabel ?? label}
       accessibilityRole="button"
       disabled={isDisabled}
       onPress={onPress}

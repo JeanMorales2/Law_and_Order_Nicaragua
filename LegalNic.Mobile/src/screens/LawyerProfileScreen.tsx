@@ -82,7 +82,7 @@ export function LawyerProfileScreen({ navigation, route }: Props) {
           </View>
         ) : null}
         <View style={styles.cover}>
-          <Pressable accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Pressable accessibilityLabel="Volver" accessibilityRole="button" onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons color={theme.colors.paper} name="chevron-back" size={24} />
           </Pressable>
           <View style={styles.coverSeal}>
@@ -163,7 +163,7 @@ export function LawyerProfileScreen({ navigation, route }: Props) {
       </ScrollView>
 
       <View style={[styles.fixedBar, { paddingBottom: Math.max(insets.bottom, theme.spacing.sm) }]}>
-        <Pressable disabled style={styles.chatButton}>
+        <Pressable accessibilityLabel="Chat no disponible" accessibilityRole="button" disabled style={styles.chatButton}>
           <Ionicons color={theme.colors.inkSoft} name="chatbubble-ellipses-outline" size={22} />
         </Pressable>
         <View style={styles.requestButtonWrap}>

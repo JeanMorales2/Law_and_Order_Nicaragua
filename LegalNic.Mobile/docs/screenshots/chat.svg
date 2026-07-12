@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#FAF7F1"/>
+  <rect width="390" height="112" fill="#1B2A4A"/>
+  <text x="72" y="66" fill="#FAF7F1" font-family="Arial" font-size="18" font-weight="700">Chat de solicitud</text>
+  <rect x="24" y="158" width="230" height="72" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <text x="44" y="198" fill="#24262B" font-family="Arial" font-size="15">Hola, revise tu caso.</text>
+  <rect x="136" y="260" width="230" height="72" rx="16" fill="#1B2A4A"/>
+  <text x="156" y="300" fill="#FAF7F1" font-family="Arial" font-size="15">Gracias, quedo atento.</text>
+  <rect x="20" y="762" width="292" height="48" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <circle cx="342" cy="786" r="24" fill="#1B2A4A"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#FAF7F1"/>
+  <rect width="390" height="238" fill="#1B2A4A"/>
+  <text x="24" y="72" fill="#B98B34" font-family="Arial" font-size="13" font-weight="700">LEGALNIC PROFESIONAL</text>
+  <text x="24" y="112" fill="#FAF7F1" font-family="Arial" font-size="28" font-weight="700">Hola, Mario</text>
+  <rect x="24" y="198" width="105" height="88" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <rect x="143" y="198" width="105" height="88" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <rect x="262" y="198" width="105" height="88" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <text x="42" y="240" fill="#1B2A4A" font-family="Arial" font-size="24" font-weight="700">4</text>
+  <text x="42" y="264" fill="#6B6E76" font-family="Arial" font-size="13">Nuevas</text>
+  <text x="24" y="340" fill="#1B2A4A" font-family="Arial" font-size="22" font-weight="700">Accesos rapidos</text>
+  <rect x="24" y="370" width="160" height="92" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+  <rect x="206" y="370" width="160" height="92" rx="16" fill="#FFFFFF" stroke="#E7E1D6"/>
+</svg>

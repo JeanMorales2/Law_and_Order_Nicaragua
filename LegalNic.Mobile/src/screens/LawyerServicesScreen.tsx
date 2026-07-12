@@ -48,6 +48,7 @@ export function LawyerServicesScreen() {
             <Text style={styles.copy}>Administra los servicios visibles en tu perfil publico.</Text>
           </View>
           <Pressable
+            accessibilityLabel="Agregar servicio"
             accessibilityRole="button"
             onPress={() => navigation.navigate("LawyerServiceForm")}
             style={styles.addButton}

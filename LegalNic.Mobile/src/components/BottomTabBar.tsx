@@ -22,6 +22,7 @@ export function BottomTabBar({ items, activeKey, onSelect }: BottomTabBarProps) 
 
         return (
           <Pressable
+            accessibilityLabel={item.label}
             accessibilityRole="button"
             key={item.key}
             onPress={() => onSelect(item.key)}
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
+    minHeight: 56,
     borderRadius: theme.radii.lg,
     paddingVertical: theme.spacing.sm,
     alignItems: "center",

@@ -194,7 +194,7 @@ function HomeHeader({
               value={search}
             />
             {search.length > 0 ? (
-              <Pressable accessibilityRole="button" onPress={() => onSearchChange("")} style={styles.clearButton}>
+              <Pressable accessibilityLabel="Limpiar busqueda" accessibilityRole="button" onPress={() => onSearchChange("")} style={styles.clearButton}>
                 <Ionicons color={theme.colors.navy} name="close" size={18} />
               </Pressable>
             ) : null}
@@ -453,8 +453,8 @@ const styles = StyleSheet.create({
     minHeight: 54,
   },
   clearButton: {
-    width: 34,
-    height: 34,
+    width: 44,
+    height: 44,
     borderRadius: theme.radii.pill,
     alignItems: "center",
     justifyContent: "center",
