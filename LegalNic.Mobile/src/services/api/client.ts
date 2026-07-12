@@ -9,7 +9,19 @@ import { clearStoredTokens, getStoredTokens, saveTokens } from "./tokenStorage";
 import { getAccessToken, notifyUnauthorized, setAccessToken } from "./session";
 import { ApiError, toApiError } from "./errors";
 
-const DEFAULT_API_URL = "http://localhost:5102";
+const rawApiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+if (!rawApiUrl) {
+  throw new Error("EXPO_PUBLIC_API_URL must be configured before running LegalNic.Mobile.");
+}
+
+function trimTrailingSlash(value: string) {
+  return value.replace(/\/+$/, "");
+}
+
+function stripApiSuffix(value: string) {
+  return value.replace(/\/api$/i, "");
+}
 
 declare module "axios" {
   export interface AxiosRequestConfig<D = any> {
@@ -24,18 +36,19 @@ declare module "axios" {
 }
 
 export const apiConfig = {
-  baseUrl: process.env.EXPO_PUBLIC_API_URL ?? DEFAULT_API_URL,
+  apiUrl: trimTrailingSlash(rawApiUrl),
+  apiRootUrl: stripApiSuffix(trimTrailingSlash(rawApiUrl)),
 };
 
 export const publicClient = axios.create({
-  baseURL: apiConfig.baseUrl,
+  baseURL: apiConfig.apiRootUrl,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 export const apiClient = axios.create({
-  baseURL: apiConfig.baseUrl,
+  baseURL: apiConfig.apiRootUrl,
   headers: {
     "Content-Type": "application/json",
   },

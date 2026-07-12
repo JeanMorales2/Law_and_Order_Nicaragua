@@ -12,7 +12,7 @@ export type ChatConnectionStatus = "connecting" | "connected" | "reconnecting" |
 
 export function createChatConnection(): HubConnection {
   return new HubConnectionBuilder()
-    .withUrl(`${apiConfig.baseUrl}/hubs/chat`, {
+    .withUrl(`${apiConfig.apiRootUrl}/hubs/chat`, {
       accessTokenFactory: () => getAccessToken() ?? "",
     })
     .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
